@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Edit quiz')}"></head>
+<body>
+  <div class="app">
+    <header th:replace="~{fragments/layout :: topbar('admin')}"></header>
+
+    <main class="main">
+      <div class="container stack">
+        <div class="section-head">
+          <div>
+            <h1 class="mb-0">Edit quiz</h1>
+            <p class="muted mb-0" th:text="${quiz.title}">Quiz title</p>
+          </div>
+          <a th:href="@{/admin}" class="btn btn-ghost btn-sm">Back</a>
+        </div>
+
+        <div th:if="${param.saved}" class="alert alert-success">Quiz updated.</div>
+        <div th:if="${param.questionAdded}" class="alert alert-success">Question created and added to this quiz.</div>
+
+        <form th:action="@{'/admin/quizzes/' + ${quiz.id}}" method="post" class="stack">
+          <section class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Quiz details</h2>
+              <button type="submit" class="btn btn-sm">Save changes</button>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col form-group">
+                  <label for="title" class="form-label">Title</label>
+                  <input id="title" name="title" th:value="${quiz.title}" class="form-control" required />
+                </div>
+                <div class="col form-group">
+                  <label for="categoryId" class="form-label">Category</label>
+                  <select id="categoryId" name="categoryId" class="form-control" required>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.id}"
+                            th:selected="${quiz.category != null and quiz.category.id == category.id}"
+                            th:text="${category.name}">Category</option>
+                  </select>
+                </div>
+                <div class="col form-group">
+                  <label for="timeLimit" class="form-label">Time limit (minutes)</label>
+                  <input id="timeLimit" name="timeLimit" type="number" min="1" max="180"
+                         th:value="${quiz.timeLimitSeconds / 60}" class="form-control" required />
+                </div>
+              </div>
+              <p class="text-sm muted mb-0">
+                Selected questions determine the quiz content. Removing a checkbox removes that question from this quiz only.
+              </p>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Questions in this quiz</h2>
+              <span class="badge badge-primary" th:text="${#lists.size(selectedQuestions)} + ' selected'">0 selected</span>
+            </div>
+            <div class="panel-body">
+              <div class="options" th:if="${availableQuestions != null and !#lists.isEmpty(availableQuestions)}">
+                <label class="option" th:each="question : ${availableQuestions}">
+                  <input type="checkbox" name="questionIds"
+                         th:value="${question.id}"
+                         th:checked="${selectedQuestionIds.contains(question.id)}" />
+                  <span class="option-letter" th:text="${question.correctOption}">A</span>
+                  <span class="option-text">
+                    <strong th:text="${question.prompt}">Question text</strong>
+                    <span class="badge" style="margin-left:.5rem" th:text="${question.category.name}">Category</span>
+                  </span>
+                </label>
+              </div>
+              <div th:if="${availableQuestions == null or #lists.isEmpty(availableQuestions)}" class="empty">
+                <div class="empty-title">No questions available</div>
+                <div class="empty-text">Create a question below to add it to this quiz.</div>
+              </div>
+            </div>
+          </section>
+        </form>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Create and add a new question</h2>
+          </div>
+          <div class="panel-body">
+            <form th:action="@{'/admin/quizzes/' + ${quiz.id} + '/questions'}" method="post" class="stack">
+              <div class="form-group">
+                <label for="prompt" class="form-label">Question text</label>
+                <textarea id="prompt" name="prompt" class="form-control" required></textarea>
+              </div>
+              <div class="row">
+                <div class="col form-group">
+                  <label for="new-categoryId" class="form-label">Category</label>
+                  <select id="new-categoryId" name="categoryId" class="form-control" required>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.id}"
+                            th:selected="${quiz.category != null and quiz.category.id == category.id}"
+                            th:text="${category.name}">Category</option>
+                  </select>
+                </div>
+                <div class="col form-group">
+                  <label for="correctOption" class="form-label">Correct option</label>
+                  <select id="correctOption" name="correctOption" class="form-control" required>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col form-group">
+                  <label for="optionA" class="form-label">Option A</label>
+                  <input id="optionA" name="optionA" class="form-control" required />
+                </div>
+                <div class="col form-group">
+                  <label for="optionB" class="form-label">Option B</label>
+                  <input id="optionB" name="optionB" class="form-control" required />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col form-group">
+                  <label for="optionC" class="form-label">Option C</label>
+                  <input id="optionC" name="optionC" class="form-control" required />
+                </div>
+                <div class="col form-group">
+                  <label for="optionD" class="form-label">Option D</label>
+                  <input id="optionD" name="optionD" class="form-control" required />
+                </div>
+              </div>
+              <button type="submit" class="btn">Create question and add</button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

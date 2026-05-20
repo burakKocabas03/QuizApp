@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Dashboard')}"></head>
+<body>
+  <div class="app">
+    <header th:replace="~{fragments/layout :: topbar('user')}"></header>
+
+    <main class="main">
+      <div class="container">
+
+        <!-- Welcome -->
+        <section class="welcome">
+          <h1>Welcome back, <span th:text="${user != null ? user.fullName : 'Student'}">Student</span></h1>
+          <p>Pick a quiz to take, review your past results, or check the leaderboard.</p>
+        </section>
+
+        <div class="dash-grid">
+          <!-- Left column -->
+          <div class="stack">
+            <!-- Available quizzes -->
+            <section>
+              <div class="section-head">
+                <h2>Available quizzes</h2>
+                <span class="muted" th:if="${quizzes != null}" th:text="${#lists.size(quizzes)} + ' total'">0 total</span>
+              </div>
+
+              <div class="quiz-grid" th:if="${quizzes != null and !#lists.isEmpty(quizzes)}">
+                <article class="card card-hover quiz-card" th:each="q : ${quizzes}">
+                  <div class="quiz-meta">
+                    <span class="badge badge-primary" th:text="${q.category}">Category</span>
+                    <span class="badge" th:text="${q.questionCount} + ' questions'">10 questions</span>
+                    <span class="badge" th:text="${q.timeLimit} + ' min'">10 min</span>
+                  </div>
+                  <h3 class="quiz-title" th:text="${q.title}">Quiz title</h3>
+                  <p class="card-sub mb-0" th:text="${q.description}">Short description of the quiz.</p>
+                  <div class="quiz-foot">
+                    <span class="text-xs muted" th:if="${q.attempts != null}" th:text="'Attempted ' + ${q.attempts} + ' times'">Attempted 0 times</span>
+                    <a th:href="@{'/quiz/' + ${q.id}}" class="btn btn-sm">Start quiz</a>
+                  </div>
+                </article>
+              </div>
+
+              <div th:if="${quizzes == null or #lists.isEmpty(quizzes)}" class="panel">
+                <div class="panel-body empty">
+                  <div class="empty-icon">📋</div>
+                  <div class="empty-title">No quizzes available</div>
+                  <div class="empty-text">Check back soon — new quizzes are added regularly.</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Past results -->
+            <section class="panel">
+              <div class="panel-header">
+                <h2 class="panel-title">Past results</h2>
+              </div>
+              <div class="table-wrap" style="border:none;border-radius:0" th:if="${results != null and !#lists.isEmpty(results)}">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Quiz</th>
+                      <th>Category</th>
+                      <th>Score</th>
+                      <th>Date</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="r : ${results}">
+                      <td th:text="${r.quizTitle}">Quiz</td>
+                      <td><span class="badge" th:text="${r.category}">Category</span></td>
+                      <td>
+                        <strong th:text="${r.score} + '/' + ${r.total}">8/10</strong>
+                        <span class="muted text-sm" th:text="' (' + ${#numbers.formatDecimal(r.score * 100.0 / r.total, 1, 0)} + '%)'"> (80%)</span>
+                      </td>
+                      <td class="muted text-sm" th:text="${#temporals.format(r.takenAt, 'dd MMM yyyy, HH:mm')}">12 May 2025</td>
+                      <td class="table-actions">
+                        <a th:href="@{'/result/' + ${r.id}}" class="btn btn-secondary btn-sm">Review</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div th:if="${results == null or #lists.isEmpty(results)}" class="panel-body empty">
+                <div class="empty-icon">📊</div>
+                <div class="empty-title">No attempts yet</div>
+                <div class="empty-text">Your quiz results will appear here.</div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right column: leaderboard -->
+          <aside class="stack">
+            <section class="panel">
+              <div class="panel-header">
+                <h2 class="panel-title">Leaderboard</h2>
+                <span class="badge badge-primary">Top 10</span>
+              </div>
+              <div class="panel-body">
+                <ol class="leaderboard" th:if="${leaderboard != null and !#lists.isEmpty(leaderboard)}">
+                  <li th:each="entry, iter : ${leaderboard}">
+                    <span class="lb-rank"
+                          th:classappend="${iter.index == 0} ? ' rank-1' : (${iter.index == 1} ? ' rank-2' : (${iter.index == 2} ? ' rank-3' : ''))"
+                          th:text="${iter.count}">1</span>
+                    <span class="lb-name" th:text="${entry.username}">user</span>
+                    <span class="lb-score" th:text="${entry.totalScore} + ' pts'">120 pts</span>
+                  </li>
+                </ol>
+                <div th:if="${leaderboard == null or #lists.isEmpty(leaderboard)}" class="empty" style="padding:1rem 0">
+                  <div class="empty-text">No rankings yet.</div>
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

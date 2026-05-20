@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Question')}"></head>
+<body>
+  <div class="app">
+    <header th:replace="~{fragments/layout :: topbar('admin')}"></header>
+
+    <main class="main">
+      <div class="container" style="max-width:760px">
+
+        <div class="section-head">
+          <div>
+            <h1 class="mb-0" th:text="${question.id != null ? 'Edit question' : 'New question'}">Question</h1>
+            <p class="muted mb-0">Fill in the question text, four options, and pick the correct one.</p>
+          </div>
+          <a th:href="@{/admin}" class="btn btn-ghost btn-sm">← Back</a>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <form th:action="${question.id != null} ? @{'/admin/questions/' + ${question.id}} : @{/admin/questions}"
+              method="post" th:object="${question}" class="panel">
+          <div class="panel-body stack">
+
+            <div class="form-group">
+              <label for="text" class="form-label">Question text</label>
+              <textarea id="text" name="text" th:field="*{text}" class="form-control" required
+                        placeholder="e.g. What is the time complexity of binary search?"></textarea>
+            </div>
+
+            <div class="row">
+              <div class="col form-group">
+                <label for="category" class="form-label">Category</label>
+                <select id="category" name="category" th:field="*{category}" class="form-control" required>
+                  <option value="" disabled>Select category</option>
+                  <option th:each="c : ${categories}" th:value="${c}" th:text="${c}">Category</option>
+                </select>
+              </div>
+              <div class="col form-group">
+                <label for="correctOption" class="form-label">Correct option</label>
+                <select id="correctOption" name="correctOption" th:field="*{correctOption}" class="form-control" required>
+                  <option value="0">A — Option 1</option>
+                  <option value="1">B — Option 2</option>
+                  <option value="2">C — Option 3</option>
+                  <option value="3">D — Option 4</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Options</label>
+              <div class="stack">
+                <div class="flex items-center gap-1">
+                  <span class="option-letter">A</span>
+                  <input name="optionA" th:value="${question.options != null and #lists.size(question.options) > 0 ? question.options[0] : ''}" class="form-control" required placeholder="Option A" />
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="option-letter">B</span>
+                  <input name="optionB" th:value="${question.options != null and #lists.size(question.options) > 1 ? question.options[1] : ''}" class="form-control" required placeholder="Option B" />
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="option-letter">C</span>
+                  <input name="optionC" th:value="${question.options != null and #lists.size(question.options) > 2 ? question.options[2] : ''}" class="form-control" required placeholder="Option C" />
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="option-letter">D</span>
+                  <input name="optionD" th:value="${question.options != null and #lists.size(question.options) > 3 ? question.options[3] : ''}" class="form-control" required placeholder="Option D" />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center gap-2" style="flex-wrap:wrap">
+              <a th:href="@{/admin}" class="btn btn-secondary">Cancel</a>
+              <button type="submit" class="btn">Save question</button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

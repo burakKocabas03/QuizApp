@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register | QuizLab</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+    <section class="auth-panel">
+        <p class="eyebrow">New user</p>
+        <h1>Create account</h1>
+        <form th:action="@{/register}" th:object="${registerRequest}" method="post" class="stack">
+            <label>Full name
+                <input th:field="*{fullName}" required>
+                <span class="field-error" th:errors="*{fullName}"></span>
+            </label>
+            <label>Username
+                <input th:field="*{username}" required>
+                <span class="field-error" th:errors="*{username}"></span>
+            </label>
+            <label>Password
+                <input th:field="*{password}" type="password" required>
+                <span class="field-error" th:errors="*{password}"></span>
+            </label>
+            <button class="button primary" type="submit">Register</button>
+        </form>
+        <div class="auth-footer">
+            <a th:href="@{/login}">Back to login</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>

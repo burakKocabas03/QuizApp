@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Create account')}"></head>
+<body>
+  <main class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <span class="brand-mark">Q</span>
+        <h1 class="auth-title">Create your account</h1>
+        <p class="auth-sub">Join QuizLab and start taking quizzes</p>
+      </div>
+
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}">Error</div>
+
+      <form th:action="@{/register}" th:object="${registerRequest}" method="post" class="stack">
+        <div class="form-group">
+          <label for="fullName" class="form-label">Full name</label>
+          <input id="fullName" name="fullName" th:field="*{fullName}" type="text" class="form-control" required />
+        </div>
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <input id="username" name="username" th:field="*{username}" type="text" class="form-control" required autocomplete="username" />
+          <div class="form-help">Letters, numbers, and underscores only.</div>
+        </div>
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input id="password" name="password" th:field="*{password}" type="password" class="form-control" required minlength="6" autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn btn-block btn-lg">Create account</button>
+      </form>
+
+      <p class="auth-footer">
+        Already have an account? <a th:href="@{/login}">Sign in</a>
+      </p>
+    </div>
+  </main>
+</body>
+</html>

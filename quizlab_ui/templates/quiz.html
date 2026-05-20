@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Take quiz')}"></head>
+<body>
+  <div class="app">
+    <!-- Quiz top bar with sticky countdown timer -->
+    <header class="quiz-bar">
+      <div class="container quiz-bar-inner">
+        <div class="flex items-center gap-2">
+          <span class="brand-mark" style="width:26px;height:26px;font-size:.75rem">Q</span>
+          <div>
+            <div class="quiz-bar-title" th:text="${quiz.title}">Quiz title</div>
+            <div class="text-xs muted">
+              <span th:text="${quiz.category}">Category</span> ·
+              <span th:text="${#lists.size(quiz.questions)} + ' questions'">10 questions</span>
+            </div>
+          </div>
+        </div>
+        <div id="quiz-timer" class="timer" th:attr="data-seconds=${quiz.timeLimit * 60}">
+          <span class="timer-dot"></span>
+          <span class="timer-text">--:--</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <form id="quiz-form" th:action="@{'/quiz/' + ${quiz.id} + '/submit'}" method="post" class="stack">
+
+          <article class="question-card" th:each="q, iter : ${quiz.questions}">
+            <div class="question-num">Question <span th:text="${iter.count}">1</span> of <span th:text="${#lists.size(quiz.questions)}">10</span></div>
+            <h2 class="question-text" th:text="${q.text}">What is the capital of France?</h2>
+
+            <div class="options">
+              <label class="option" th:each="opt, oIter : ${q.options}">
+                <input type="radio" th:name="'answers[' + ${q.id} + ']'" th:value="${oIter.index}" />
+                <span class="option-letter" th:text="${T(java.lang.Character).toString((char)(65 + oIter.index))}">A</span>
+                <span class="option-text" th:text="${opt}">Option text</span>
+              </label>
+            </div>
+          </article>
+
+          <div class="flex justify-between items-center gap-2" style="flex-wrap:wrap">
+            <p class="text-sm muted mb-0">Make sure to answer every question before submitting.</p>
+            <button type="submit" class="btn btn-lg">Submit answers</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script th:src="@{/js/quiz.js}"></script>
+</body>
+</html>

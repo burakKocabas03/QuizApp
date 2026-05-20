@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Result | QuizLab</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/dashboard}">QuizLab</a>
+    <a class="icon-button" th:href="@{/dashboard}">Dashboard</a>
+</header>
+
+<main class="result-grid">
+    <section class="score-panel">
+        <p class="eyebrow" th:text="${attempt.categoryName}">Category</p>
+        <h1 th:text="${attempt.quizTitle}">Quiz</h1>
+        <div class="score-number" th:text="${attempt.score + '%'}">85%</div>
+        <div class="card-meta">
+            <span th:text="${attempt.correctAnswers + '/' + attempt.totalQuestions + ' correct'}">3/4 correct</span>
+            <span th:text="${attempt.secondsSpent + ' sec'}">120 sec</span>
+        </div>
+        <canvas id="resultChart" width="260" height="160"
+                th:attr="data-correct=${attempt.correctAnswers},data-wrong=${attempt.totalQuestions - attempt.correctAnswers}"></canvas>
+    </section>
+
+    <section class="answer-review">
+        <h2>Answer review</h2>
+        <article class="review-row" th:each="answer : ${attempt.answers}" th:classappend="${answer.correct} ? 'correct' : 'wrong'">
+            <div>
+                <h3 th:text="${answer.questionText}">Question</h3>
+                <p>
+                    <span th:text="${'Selected: ' + answer.selectedOption}">Selected: A</span>
+                    <span th:text="${'Correct: ' + answer.correctOption}">Correct: B</span>
+                </p>
+            </div>
+            <strong th:text="${answer.correct ? 'Correct' : 'Wrong'}">Correct</strong>
+        </article>
+    </section>
+</main>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

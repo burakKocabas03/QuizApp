@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin | QuizLab</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/admin}">QuizLab Admin</a>
+    <form th:action="@{/logout}" method="post">
+        <button class="icon-button" title="Logout" type="submit">Logout</button>
+    </form>
+</header>
+
+<main class="page-grid">
+    <section class="hero-band admin-band">
+        <div>
+            <p class="eyebrow">Management</p>
+            <h1>Quiz control panel</h1>
+        </div>
+        <a class="button primary" th:href="@{/admin/questions/new}">Add question</a>
+    </section>
+
+    <section class="two-column">
+        <div>
+            <div class="section-heading">
+                <h2>Questions</h2>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Category</th>
+                        <th>Answer</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="question : ${questions}">
+                        <td th:text="${question.prompt}">Prompt</td>
+                        <td th:text="${question.category.name}">Category</td>
+                        <td th:text="${question.correctOption}">A</td>
+                        <td class="actions">
+                            <a class="small-link" th:href="@{/admin/questions/{id}/edit(id=${question.id})}">Edit</a>
+                            <form th:action="@{/admin/questions/{id}/delete(id=${question.id})}" method="post">
+                                <button class="danger-link" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <aside class="panel">
+            <h2>Create quiz</h2>
+            <form th:action="@{/admin/quizzes}" method="post" class="stack">
+                <label>Title
+                    <input name="title" required>
+                </label>
+                <label>Category
+                    <select name="categoryId" required>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                    </select>
+                </label>
+                <label>Time limit
+                    <input name="timeLimitSeconds" type="number" min="60" step="30" value="300" required>
+                </label>
+                <label>Question count
+                    <input name="questionCount" type="number" min="1" value="4" required>
+                </label>
+                <button class="button primary" type="submit">Create quiz</button>
+            </form>
+        </aside>
+    </section>
+
+    <section class="two-column">
+        <div>
+            <div class="section-heading">
+                <h2>Quizzes</h2>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Time</th>
+                        <th>Questions</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="quiz : ${quizzes}">
+                        <td th:text="${quiz.title}">Quiz</td>
+                        <td th:text="${quiz.category.name}">Category</td>
+                        <td th:text="${quiz.timeLimitSeconds + ' sec'}">300 sec</td>
+                        <td th:text="${quiz.questionCount}">4</td>
+                        <td>
+                            <form th:action="@{/admin/quizzes/{id}/delete(id=${quiz.id})}" method="post">
+                                <button class="danger-link" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <aside>
+            <div class="section-heading">
+                <h2>User results</h2>
+            </div>
+            <div class="table-wrap compact">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Quiz</th>
+                        <th>Score</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="attempt : ${attempts}">
+                        <td th:text="${attempt.user.fullName}">User</td>
+                        <td><a th:href="@{/result/{id}(id=${attempt.id})}" th:text="${attempt.quizTitle}">Quiz</a></td>
+                        <td th:text="${attempt.score + '%'}">100%</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(attempts)}">
+                        <td colspan="3" class="muted center">No submissions yet.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </aside>
+    </section>
+</main>
+</body>
+</html>

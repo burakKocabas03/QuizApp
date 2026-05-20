@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  Shared layout fragments for QuizLab.
+  Usage in a page:
+    <html xmlns:th="http://www.thymeleaf.org"
+          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+          layout:decorate="~{fragments/layout :: page(title='Dashboard')}">
+  Or include head/topbar manually:
+    <head th:replace="~{fragments/layout :: head('Dashboard')}"></head>
+    <div th:replace="~{fragments/layout :: topbar('user')}"></div>
+-->
+<head th:fragment="head(title)">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="${title} + ' — QuizLab'">QuizLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+
+<!-- USER top bar -->
+<header th:fragment="topbar(role)" class="topbar">
+  <div class="container topbar-inner">
+    <a th:href="@{/dashboard}" class="brand">
+      <span class="brand-mark">Q</span>
+      <span>QuizLab</span>
+      <span class="brand-tag" th:if="${role == 'admin'}">Admin</span>
+    </a>
+    <nav class="nav">
+      <a th:if="${role != 'admin'}" th:href="@{/dashboard}" class="active">Dashboard</a>
+      <a th:if="${role == 'admin'}" th:href="@{/admin}" class="active">Admin</a>
+      <span class="user-chip" th:if="${username != null}">
+        <span class="avatar" th:text="${#strings.substring(username,0,1).toUpperCase()}">U</span>
+        <span th:text="${username}">user</span>
+      </span>
+      <form th:action="@{/logout}" method="post" class="inline-form">
+        <button type="submit" class="btn btn-ghost btn-sm">Log out</button>
+      </form>
+    </nav>
+  </div>
+</header>
+</html>

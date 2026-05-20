@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${quiz.title + ' | QuizLab'}">Quiz | QuizLab</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/dashboard}">QuizLab</a>
+    <div class="timer" id="timer" th:attr="data-seconds=${quiz.timeLimitSeconds}">00:00</div>
+</header>
+
+<main class="quiz-shell">
+    <section class="quiz-title">
+        <p class="eyebrow" th:text="${quiz.category.name}">Category</p>
+        <h1 th:text="${quiz.title}">Quiz title</h1>
+    </section>
+
+    <form id="quizForm" th:action="@{/quiz/{id}/submit(id=${quiz.id})}" method="post" class="question-stack">
+        <input type="hidden" name="startedAt" th:value="${startedAt}">
+        <article class="question-card" th:each="question, state : ${questions}">
+            <input type="hidden" name="questionIds" th:value="${question.id}">
+            <p class="question-number" th:text="${'Question ' + (state.index + 1)}">Question 1</p>
+            <h2 th:text="${question.prompt}">Prompt</h2>
+            <div class="option-list">
+                <label><input type="radio" th:name="${'answer_' + question.id}" value="A"> <span th:text="${question.optionA}">A</span></label>
+                <label><input type="radio" th:name="${'answer_' + question.id}" value="B"> <span th:text="${question.optionB}">B</span></label>
+                <label><input type="radio" th:name="${'answer_' + question.id}" value="C"> <span th:text="${question.optionC}">C</span></label>
+                <label><input type="radio" th:name="${'answer_' + question.id}" value="D"> <span th:text="${question.optionD}">D</span></label>
+            </div>
+        </article>
+        <button class="button primary wide" type="submit">Submit quiz</button>
+    </form>
+</main>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

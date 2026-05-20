@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Sign in')}"></head>
+<body>
+  <main class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <span class="brand-mark">Q</span>
+        <h1 class="auth-title">Welcome to QuizLab</h1>
+        <p class="auth-sub">Sign in to continue to your dashboard</p>
+      </div>
+
+      <div th:if="${param.error}" class="alert alert-danger">Invalid username or password.</div>
+      <div th:if="${param.logout}" class="alert alert-success">You've been signed out.</div>
+      <div th:if="${param.registered}" class="alert alert-success">Account created. Please sign in.</div>
+
+      <form th:action="@{/login}" method="post" class="stack">
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <input id="username" name="username" type="text" class="form-control" required autofocus autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input id="password" name="password" type="password" class="form-control" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-block btn-lg">Sign in</button>
+      </form>
+
+      <p class="auth-footer">
+        New to QuizLab? <a th:href="@{/register}">Create an account</a>
+      </p>
+
+      <div class="hint-box">
+        <strong>Demo accounts</strong><br />
+        User: <code>student / student123</code><br />
+        Admin: <code>admin / admin123</code>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
