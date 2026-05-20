@@ -56,3 +56,4 @@ Spring/JPA creates the tables automatically because `spring.jpa.hibernate.ddl-au
 The H2 console is available at `/h2-console` while the app is running with the default H2 profile.
 
 Database URL: `jdbc:h2:file:./data/quizdb`
+# QuizApp
